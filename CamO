@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CamO — Universal Marketplace</title>
+    <style>
+      :root {
+        --bg: #050505;
+        --bg-soft: #0b0b0b;
+        --panel: #111111;
+        --panel-2: #161616;
+        --border: #1f2937;
+        --text: #ffffff;
+        --muted: #b4b7bb;
+        --emerald: #10b981;
+        --emerald-2: #34d399;
+        --purple: #8b5cf6;
+        --purple-2: #a78bfa;
+        --danger: #ef4444;
+        --gold: #fbbf24;
+        --shadow: 0 0 20px rgba(16, 185, 129, 0.25);
+      }
+
+      * { box-sizing: border-box; }
+
+      html, body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        background:
+          radial-gradient(circle at top left, rgba(139, 92, 246, 0.12), transparent 22%),
+          radial-gradient(circle at top right, rgba(16, 185, 129, 0.08), transparent 20%),
+          var(--bg);
+      }
+
+      a { color: inherit; text-decoration: none; }
+      input, select, textarea, button {
+        font: inherit;
+      }
+
+      .container {
+        width: min(1260px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(5, 5, 5, 0.94);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .topbar-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        min-height: 74px;
+      }
+
+      .brand {
+        font-size: clamp(1.8rem, 3vw, 2.5rem);
+        font-weight: 900;
+        letter-spacing: -0.08em;
+        color: var(--text);
+      }
+
+      .brand span {
+        background: linear-gradient(90deg, var(--emerald), var(--purple));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .topbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .wallet-pill {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 8px 14px;
+        font-weight: 700;
+      }
+
+      .wallet-pill strong {
+        color: var(--emerald-2);
+      }
+
+      .main-shell {
+        display: grid;
+        grid-template-columns: 1.5fr 0.8fr;
+        gap: 24px;
+        padding: 28px 0 18px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+      }
+
+      .hero {
+        padding: 28px;
+      }
+
+      .hero-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 20px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: rgba(16, 185, 129, 0.14);
+        color: var(--emerald-2);
+        border: 1px solid rgba(16, 185, 129, 0.32);
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2.4rem, 4vw, 4rem);
+        letter-spacing: -0.08em;
+        line-height: 1;
+      }
+
+      .hero p {
+        margin: 18px 0 0;
+        color: var(--muted);
+        font-size: 1.04rem;
+        line-height: 1.7;
+        max-width: 56ch;
+      }
+
+      .hero-stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(120px, 1fr));
+        gap: 14px;
+        margin-top: 26px;
+      }
+
+      .metric {
+        background: var(--panel-2);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 14px 16px;
+      }
+
+      .metric strong {
+        display: block;
+        font-size: 1.8rem;
+        letter-spacing: -0.06em;
+        color: var(--text);
+      }
+
+      .metric span {
+        color: var(--muted);
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      .side-stack {
+        display: grid;
+        gap: 20px;
+      }
+
+      .factory-box, .wallet-box {
+        padding: 20px 22px;
+      }
+
+      .box-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+
+      .box-header h3 {
+        margin: 0;
+        font-size: 1.15rem;
+      }
+
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .status-pill.running {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.35);
+        color: var(--emerald-2);
+      }
+
+      .status-pill.paused {
+        background: rgba(239, 68, 68, 0.08);
+        border: 1px solid rgba(239, 68, 68, 0.35);
+        color: #fca5a5;
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor;
+        box-shadow: 0 0 12px currentColor;
+      }
+
+      .countdown {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(58px, 1fr));
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .time-box {
+        background: var(--panel-2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 10px 8px;
+        text-align: center;
+      }
+
+      .time-box strong {
+        display: block;
+        font-size: 1.4rem;
+        letter-spacing: -0.06em;
+      }
+
+      .time-box span {
+        color: var(--muted);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .meta-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(105px, 1fr));
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .mini-card {
+        background: var(--panel-2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px;
+      }
+
+      .mini-card small {
+        display: block;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+
+      .mini-card strong {
+        font-size: 1.25rem;
+        letter-spacing: -0.05em;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .btn {
+        border: 1px solid var(--border);
+        color: var(--text);
+        background: var(--panel-2);
+        border-radius: 12px;
+        padding: 10px 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 0 18px rgba(139, 92, 246, 0.25);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--emerald), var(--emerald-2));
+        color: #03120f;
+        border-color: rgba(16, 185, 129, 0.7);
+        box-shadow: var(--shadow);
+      }
+
+      .btn-purple {
+        background: linear-gradient(135deg, var(--purple), var(--purple-2));
+        color: #f5f3ff;
+        border-color: rgba(139, 92, 246, 0.8);
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #7f1d1d, #ef4444);
+      }
+
+      .marketplace-wrap {
+        margin-top: 8px;
+      }
+
+      .market-toolbar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        justify-content: space-between;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 16px 18px;
+      }
+
+      .market-toolbar .search-box {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--panel-2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 10px 12px;
+      }
+
+      .market-toolbar input,
+      .market-toolbar select {
+        width: 100%;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: var(--text);
+      }
+
+      .market-toolbar select {
+        width: 210px;
+      }
+
+      .market-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(220px, 1fr));
+        gap: 18px;
+        margin-top: 18px;
+      }
+
+      .listing-card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .listing-badge {
+        display: inline-flex;
+        width: fit-content;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        border: 1px solid var(--border);
+      }
+
+      .listing-badge.ai {
+        background: rgba(139, 92, 246, 0.12);
+        color: var(--purple-2);
+      }
+
+      .listing-badge.user {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--emerald-2);
+      }
+
+      .listing-card h3 {
+        margin: 0;
+        font-size: 1.15rem;
+        letter-spacing: -0.04em;
+      }
+
+      .listing-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .listing-price {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        margin-top: 4px;
+      }
+
+      .price-main {
+        font-size: 1.8rem;
+        font-weight: 800;
+        letter-spacing: -0.06em;
+      }
+
+      .price-tier {
+        font-size: 0.72rem;
+        color: var(--muted);
+        uppercase: true;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .listing-description {
+        color: var(--muted);
+        line-height: 1.6;
+        min-height: 64px;
+      }
+
+      .listing-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: auto;
+      }
+
+      .listing-actions button {
+        flex: 1;
+      }
+
+      .side-panel {
+        padding: 20px 20px 22px;
+      }
+
+      .form-grid {
+        display: grid;
+        gap: 12px;
+      }
+
+      .field {
+        display: grid;
+        gap: 8px;
+      }
+
+      .field label {
+        font-weight: 700;
+        color: var(--muted);
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .field input,
+      .field select,
+      .field textarea {
+        width: 100%;
+        border: 1px solid var(--border);
+        background: var(--panel-2);
+        color: var(--text);
+        border-radius: 12px;
+        padding: 12px 14px;
+        resize: vertical;
+      }
+
+      .field textarea {
+        min-height: 120px;
+      }
+
+      .submit-btn {
+        margin-top: 8px;
+        width: 100%;
+      }
+
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(2, 6, 23, 0.75);
+        display: none;
+        place-items: center;
+        z-index: 30;
+      }
+
+      .modal.visible {
+        display: grid;
+      }
+
+      .modal-panel {
+        width: min(460px, calc(100% - 24px));
+        background: #0f1115;
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        padding: 22px;
+      }
+
+      .modal-panel h2 {
+        margin: 0 0 6px;
+        font-size: 1.7rem;
+        letter-spacing: -0.06em;
+      }
+
+      .modal-panel p {
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .checkout-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--panel-2);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 14px;
+        margin: 14px 0 18px;
+      }
+
+      .modal-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .modal-actions button {
+        flex: 1;
+      }
+
+      .empty-state {
+        grid-column: 1 / -1;
+        border: 1px dashed var(--border);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.02);
+        color: var(--muted);
+        padding: 30px 20px;
+        text-align: center;
+      }
+
+      @media (max-width: 1040px) {
+        .main-shell {
+          grid-template-columns: 1fr;
+        }
+
+        .market-grid {
+          grid-template-columns: repeat(2, minmax(220px, 1fr));
+        }
+      }
+
+      @media (max-width: 640px) {
+        .topbar-inner {
+          flex-wrap: wrap;
+          justify-content: center;
+          padding: 10px 0 16px;
+        }
+
+        .hero-stats,
+        .market-grid,
+        .countdown {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .market-toolbar {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .market-toolbar select {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <div class="brand"><span>CamO</span></div>
+        <div class="topbar-actions">
+          <div class="wallet-pill">Wallet <strong id="walletBalance">$1,500</strong></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container main-shell">
+      <section>
+        <div class="panel hero">
+          <div class="hero-header">
+            <div class="eyebrow">Universal Market</div>
+          </div>
+          <h1>Buy, sell, and automate everything.</h1>
+          <p>
+            CamO is a universal marketplace for books, electronics, digital packets,
+            AI services, and more. Launch new listings instantly and watch the AI factory mint products live.
+          </p>
+
+          <div class="hero-stats">
+            <div class="metric">
+              <strong id="metricFinished">0</strong>
+              <span>AI products</span>
+            </div>
+            <div class="metric">
+              <strong id="metricWallet">$1,500</strong>
+              <span>Wallet</span>
+            </div>
+            <div class="metric">
+              <strong id="metricListings">0</strong>
+              <span>Listings</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="marketplace-wrap">
+          <div class="market-toolbar">
+            <div class="search-box">
+              <span>🔎</span>
+              <input id="searchInput" type="text" placeholder="Search anything..." />
+            </div>
+            <select id="categoryFilter">
+              <option value="All">All Categories</option>
+              <option value="Books">Books</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Digital Packets">Digital Packets</option>
+              <option value="Services">Services</option>
+              <option value="Home">Home</option>
+              <option value="Fashion">Fashion</option>
+              <option value="Gaming">Gaming</option>
+              <option value="Health">Health</option>
+              <option value="Pets">Pets</option>
+              <option value="Vehicles">Vehicles</option>
+              <option value="Industrial">Industrial</option>
+            </select>
+          </div>
+
+          <div id="marketGrid" class="market-grid" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <aside class="side-stack">
+        <div class="panel wallet-box">
+          <div class="box-header">
+            <h3>AI Factory</h3>
+            <span id="engineStatus" class="status-pill running"><span class="status-dot"></span> Live</span>
+          </div>
+
+          <div class="countdown" id="countdownWrap">
+            <div class="time-box"><strong id="days">07</strong><span>Days</span></div>
+            <div class="time-box"><strong id="hours">00</strong><span>Hours</span></div>
+            <div class="time-box"><strong id="minutes">00</strong><span>Minutes</span></div>
+            <div class="time-box"><strong id="seconds">00</strong><span>Seconds</span></div>
+          </div>
+
+          <div class="meta-grid">
+            <div class="mini-card">
+              <small>Live Count</small>
+              <strong id="liveCounter">0 / 100</strong>
+            </div>
+            <div class="mini-card">
+              <small>Mode</small>
+              <strong id="speedLabel">2 Minutes</strong>
+            </div>
+          </div>
+
+          <div class="controls">
+            <button id="toggleSpeedBtn" class="btn btn-primary">Switch to 2s Demo</button>
+            <button id="bypassBtn" class="btn btn-purple">Bypass Cooldown</button>
+          </div>
+        </div>
+
+        <div class="panel side-panel">
+          <div class="box-header">
+            <h3>Add Item to Marketplace</h3>
+          </div>
+
+          <form id="listingForm" class="form-grid">
+            <div class="field">
+              <label for="titleInput">Title</label>
+              <input id="titleInput" type="text" placeholder="Example: Vintage camera" required />
+            </div>
+
+            <div class="field">
+              <label for="categoryInput">Category</label>
+              <select id="categoryInput" required>
+                <option value="Books">Books</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Digital Packets">Digital Packets</option>
+                <option value="Services">Services</option>
+                <option value="Home">Home</option>
+                <option value="Fashion">Fashion</option>
+                <option value="Gaming">Gaming</option>
+                <option value="Health">Health</option>
+                <option value="Pets">Pets</option>
+                <option value="Vehicles">Vehicles</option>
+                <option value="Industrial">Industrial</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="sellerInput">Seller Name</label>
+              <input id="sellerInput" type="text" placeholder="Your name" required />
+            </div>
+
+            <div class="field">
+              <label for="priceInput">Price</label>
+              <input id="priceInput" type="number" step="0.01" min="0" placeholder="49.99" required />
+            </div>
+
+            <div class="field">
+              <label for="descriptionInput">Description</label>
+              <textarea id="descriptionInput" placeholder="Describe your item or service" required></textarea>
+            </div>
+
+            <button class="btn btn-primary submit-btn" type="submit">Add Item to Marketplace</button>
+          </form>
+        </div>
+      </aside>
+    </main>
+
+    <div id="checkoutModal" class="modal" aria-modal="true" role="dialog" aria-labelledby="modalTitle">
+      <div class="modal-panel">
+        <h2 id="modalTitle">Checkout</h2>
+        <p id="modalDescription">You are about to buy this product.</p>
+
+        <div class="checkout-row">
+          <span id="checkoutName">Product</span>
+          <strong id="checkoutPrice">$0</strong>
+        </div>
+
+        <div class="modal-actions">
+          <button id="cancelPurchase" class="btn">Cancel</button>
+          <button id="confirmPurchase" class="btn btn-primary">Buy Now</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const state = {
+        wallet: 1500,
+        search: '',
+        category: 'All',
+        mode: 'slow',
+        aiGeneratedCount: 0,
+        autoMintTimer: null,
+        cooldownEndsAt: null,
+        selectedProduct: null,
+        marketplaceItems: [
+          {
+            id: crypto.randomUUID(),
+            title: 'AI Growth Playbook',
+            category: 'Digital Packets',
+            seller: 'Nova Labs',
+            price: 50,
+            description: 'A full strategy and content bundle for scaling product launches and creators.',
+            origin: 'user',
+            tier: 'Growth Tier',
+            image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80'
+          },
+          {
+            id: crypto.randomUUID(),
+            title: 'The Silent Investor',
+            category: 'Books',
+            seller: 'Maya Stone',
+            price: 24,
+            description: 'A practical guide to building cash-flow systems and smart portfolio habits.',
+            origin: 'user',
+            tier: 'Standard',
+            image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=900&q=80'
+          },
+          {
+            id: crypto.randomUUID(),
+            title: '4K Streaming Webcam',
+            category: 'Electronics',
+            seller: 'Lexon Gear',
+            price: 179,
+            description: 'USB webcam with low-light enhancement and studio-quality audio.',
+            origin: 'user',
+            tier: 'Premium',
+            image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80'
+          },
+          {
+            id: crypto.randomUUID(),
+            title: 'Brand Launch Sprint',
+            category: 'Services',
+            seller: 'Pixel Forge',
+            price: 120,
+            description: 'A custom launch sprint for product identity, ad copy, and funnel design.',
+            origin: 'user',
+            tier: 'Pro Tier',
+            image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=900&q=80'
+          }
+        ]
+      };
+
+      function formatMoney(value) {
+        return new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          maximumFractionDigits: 2
+        }).format(value);
+      }
+
+      function updateWalletDisplay() {
+        document.getElementById('walletBalance').textContent = formatMoney(state.wallet);
+        document.getElementById('metricWallet').textContent = formatMoney(state.wallet);
+      }
+
+      function updateCounters() {
+        document.getElementById('metricFinished').textContent = String(state.aiGeneratedCount);
+        document.getElementById('metricListings').textContent = String(state.marketplaceItems.length);
+        document.getElementById('liveCounter').textContent = `${state.aiGeneratedCount} / 100`;
+      }
+
+      function setEngineStatus(isRunning) {
+        const statusBar = document.getElementById('engineStatus');
+        statusBar.classList.toggle('running', isRunning);
+        statusBar.classList.toggle('paused', !isRunning);
+        statusBar.innerHTML = isRunning
+          ? '<span class="status-dot"></span> Live'
+          : '<span class="status-dot"></span> Paused';
+      }
+
+      function getCurrentInterval() {
+        return state.mode === 'slow' ? 120000 : 2000;
+      }
+
+      function startMintLoop() {
+        if (state.autoMintTimer) clearInterval(state.autoMintTimer);
+
+        state.autoMintTimer = setInterval(() => {
+          if (state.cooldownEndsAt && Date.now() >= state.cooldownEndsAt) {
+            state.cooldownEndsAt = null;
+            state.aiGeneratedCount = 0;
+            setEngineStatus(true);
+            updateCounters();
+            updateCooldownDisplay();
+          }
+
+          if (state.cooldownEndsAt) return;
+
+          if (state.aiGeneratedCount >= 100) {
+            state.cooldownEndsAt = Date.now() + 7 * 24 * 60 * 60 * 1000;
+            setEngineStatus(false);
+            updateCooldownDisplay();
+            return;
+          }
+
+          mintAiProduct();
+        }, getCurrentInterval());
+      }
+
+      function updateCooldownDisplay() {
+        const remaining = Math.max(0, state.cooldownEndsAt ? state.cooldownEndsAt - Date.now() : 0);
+        const totalSeconds = Math.floor(remaining / 1000);
+        const days = Math.floor(totalSeconds / 86400);
+        const hours = Math.floor((totalSeconds % 86400) / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        document.getElementById('days').textContent = String(days).padStart(2, '0');
+        document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+        document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+        document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+
+        if (state.cooldownEndsAt) {
+          setEngineStatus(false);
+        } else {
+          setEngineStatus(true);
+        }
+      }
+
+      function triggerCooldown() {
+        state.cooldownEndsAt = Date.now() + 7 * 24 * 60 * 60 * 1000;
+        setEngineStatus(false);
+        updateCooldownDisplay();
+      }
+
+      function mintAiProduct() {
+        const tiers = [
+          { name: 'Free Tier', price: 0, type: 'Starter/sample packet' },
+          { name: 'Growth Tier', price: 50, type: 'Full strategy & media bundle' },
+          { name: 'Pro Tier', price: 100, type: 'Custom automated platform pack' }
+        ];
+
+        const tier = tiers[Math.floor(Math.random() * tiers.length)];
+        const categories = ['Books', 'Electronics', 'Digital Packets', 'Services', 'Home', 'Fashion', 'Gaming', 'Health', 'Pets', 'Vehicles', 'Industrial'];
+        const productTemplates = {
+          Books: ['AI MasterClass', 'Growth Diary', 'Creator Blueprint', 'Launch Strategy Notes', 'Silent Sales System', 'Market Edge Journal'],
+          Electronics: ['Signal Hub', 'Smart Dock', 'Vision Module', 'Neural Sensor', 'Drone Starter Kit', 'PowerSync Charger'],
+          'Digital Packets': ['Prompt Vault', 'Growth Pack', 'Automation Kit', 'Traffic Layer', 'AI Workflow Pack', 'Creator Bundle'],
+          Services: ['Client Funnel Sprint', 'Audit System', 'Launch Concierge', 'Brand Reactor', 'Growth Ops Setup', 'Ad Copy Lab'],
+          Home: ['Smart Lamp Grid', 'CleanAir Pro', 'Aroma Nest', 'DeskFlow Setup', 'Eco Heater X', 'HomeSync Bundle'],
+          Fashion: ['Luna Street Set', 'Urban Flex Pack', 'Signature Leather Case', 'Glow Street Tote', 'Minimalist Layer Kit', 'Aero Fit Bundle'],
+          Gaming: ['Arena Boost Pack', 'Quest Loot Bundle', 'Console Desk Kit', 'RGB Setup Pack', 'Controller Mod Kit', 'Game Scene Vault'],
+          Health: ['Lift Recovery Kit', 'Daily Vital Pack', 'Hydra Balance Set', 'StrongMind Planner', 'Protein Flow Bundle', 'Wellness Starter Kit'],
+          Pets: ['Paw Smart Feeder', 'CalmNest Bed', 'PlayTrack Kit', 'Grooming Kit Pro', 'Pet Wellness Pack', 'Fetch Booster Set'],
+          Vehicles: ['DriveSync Car Kit', 'Urban Ride Pack', 'StormGuard Charger', 'RoadReady Essentials', 'AutoGlow Upgrade', 'TorqueBoost Bundle'],
+          Industrial: ['Forge Pro Kit', 'Machinery Monitor Pack', 'Safety Shield Set', 'ToolSync System', 'Plant Flow Utility', 'Factory Ops Bundle']
+        };
+
+        const category = categories[Math.floor(Math.random() * categories.length)];
+        const title = productTemplates[category][Math.floor(Math.random() * productTemplates[category].length)];
+
+        const fallbackImages = {
+          Books: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=900&q=80',
+          Electronics: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80',
+          'Digital Packets': 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80',
+          Services: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=900&q=80',
+          Home: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80',
+          Fashion: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=900&q=80',
+          Gaming: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80',
+          Health: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=900&q=80',
+          Pets: 'https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=900&q=80',
+          Vehicles: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=900&q=80',
+          Industrial: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=900&q=80'
+        };
+
+        const product = {
+          id: crypto.randomUUID(),
+          title: `${title} ${tier.name}`,
+          category,
+          seller: 'CamO AI Factory',
+          price: tier.price,
+          description: `Generated automatically by the AI engine. Includes ${tier.type} and a live marketplace listing for immediate distribution.`,
+          origin: 'ai',
+          tier: tier.name,
+          image: fallbackImages[category] || 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80'
+        };
+
+        state.marketplaceItems.unshift(product);
+        state.aiGeneratedCount += 1;
+        updateCounters();
+
+        if (state.aiGeneratedCount >= 100) {
+          triggerCooldown();
+        }
+      }
+
+      function renderListings() {
+        const grid = document.getElementById('marketGrid');
+        const filtered = state.marketplaceItems.filter((item) => {
+          const matchesSearch = item.title.toLowerCase().includes(state.search.toLowerCase()) || item.description.toLowerCase().includes(state.search.toLowerCase());
+          const matchesCategory = state.category === 'All' || item.category === state.category;
+          return matchesSearch && matchesCategory;
+        });
+
+        if (!filtered.length) {
+          grid.innerHTML = '<div class=\"empty-state\">No listings match your filters.</div>';
+          return;
+        }
+
+        grid.innerHTML = filtered
+          .map((item) => `
+            <article class="listing-card">
+              <img src="${item.image || 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80'}" alt="${item.title}" style="width:100%; height:180px; object-fit:cover; border-radius:12px; border:1px solid var(--border); background:#0d0d0d;" />
+              <span class="listing-badge ${item.origin === 'ai' ? 'ai' : 'user'}">${item.origin === 'ai' ? 'AI' : 'User'}</span>
+              <h3>${item.title}</h3>
+              <div class="listing-meta">
+                <span>${item.category}</span>
+                <span>${item.seller}</span>
+              </div>
+              <div class="listing-price">
+                <span class="price-main">${formatMoney(item.price)}</span>
+                <span class="price-tier">${item.tier || 'Listing'}</span>
+              </div>
+              <div class="listing-description">${item.description}</div>
+              <div class="listing-actions">
+                <button class="btn btn-primary buy-now" data-id="${item.id}">Buy Now</button>
+              </div>
+            </article>
+          `)
+          .join('');
+
+        grid.querySelectorAll('.buy-now').forEach((button) => {
+          button.addEventListener('click', () => {
+            const product = state.marketplaceItems.find((item) => item.id === button.dataset.id);
+            openCheckout(product);
+          });
+        });
+      }
+
+      function openCheckout(product) {
+        state.selectedProduct = product;
+        const modal = document.getElementById('checkoutModal');
+        document.getElementById('modalDescription').textContent = `You are about to purchase ${product.title}.`;
+        document.getElementById('checkoutName').textContent = product.title;
+        document.getElementById('checkoutPrice').textContent = formatMoney(product.price);
+        modal.classList.add('visible');
+      }
+
+      function closeCheckout() {
+        document.getElementById('checkoutModal').classList.remove('visible');
+        state.selectedProduct = null;
+      }
+
+      function purchaseSelected() {
+        const product = state.selectedProduct;
+        if (!product) return;
+
+        if (state.wallet < product.price) {
+          alert('Your wallet balance is too low for this purchase.');
+          return;
+        }
+
+        state.wallet -= product.price;
+        updateWalletDisplay();
+        alert(`Purchase complete: ${product.title} for ${formatMoney(product.price)}.`);
+        closeCheckout();
+      }
+
+      function bindForm() {
+        document.getElementById('listingForm').addEventListener('submit', (e) => {
+          e.preventDefault();
+
+          const title = document.getElementById('titleInput').value.trim();
+          const category = document.getElementById('categoryInput').value;
+          const seller = document.getElementById('sellerInput').value.trim();
+          const price = Number(document.getElementById('priceInput').value);
+          const description = document.getElementById('descriptionInput').value.trim();
+
+          if (!title || !seller || !description || Number.isNaN(price)) return;
+
+          const userImageMap = {
+            Books: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=900&q=80',
+            Electronics: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80',
+            'Digital Packets': 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80',
+            Services: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=900&q=80',
+            Home: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80',
+            Fashion: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=900&q=80',
+            Gaming: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80',
+            Health: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=900&q=80',
+            Pets: 'https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=900&q=80',
+            Vehicles: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=900&q=80',
+            Industrial: 'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=900&q=80'
+          };
+
+          state.marketplaceItems.unshift({
+            id: crypto.randomUUID(),
+            title,
+            category,
+            seller,
+            price,
+            description,
+            origin: 'user',
+            tier: 'Marketplace Listing',
+            image: userImageMap[category] || 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=80'
+          });
+
+          document.getElementById('listingForm').reset();
+          renderListings();
+          updateCounters();
+        });
+      }
+
+      function bindControls() {
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+          state.search = e.target.value;
+          renderListings();
+        });
+
+        document.getElementById('categoryFilter').addEventListener('change', (e) => {
+          state.category = e.target.value;
+          renderListings();
+        });
+
+        document.getElementById('toggleSpeedBtn').addEventListener('click', () => {
+          state.mode = state.mode === 'slow' ? 'demo' : 'slow';
+          const btn = document.getElementById('toggleSpeedBtn');
+          const label = document.getElementById('speedLabel');
+
+          if (state.mode === 'slow') {
+            btn.textContent = 'Switch to 2s Demo';
+            label.textContent = '2 Minutes';
+          } else {
+            btn.textContent = 'Switch to 2 Minutes';
+            label.textContent = '2 Seconds';
+          }
+
+          startMintLoop();
+        });
+
+        document.getElementById('bypassBtn').addEventListener('click', () => {
+          state.cooldownEndsAt = null;
+          state.aiGeneratedCount = 0;
+          setEngineStatus(true);
+          updateCounters();
+          updateCooldownDisplay();
+        });
+
+        document.getElementById('cancelPurchase').addEventListener('click', closeCheckout);
+        document.getElementById('confirmPurchase').addEventListener('click', purchaseSelected);
+
+        document.getElementById('checkoutModal').addEventListener('click', (event) => {
+          if (event.target.id === 'checkoutModal') closeCheckout();
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        updateWalletDisplay();
+        updateCounters();
+        renderListings();
+        bindForm();
+        bindControls();
+        startMintLoop();
+        updateCooldownDisplay();
+        setInterval(updateCooldownDisplay, 1000);
+      });
+    </script>
+  </body>
+</html>
